@@ -105,8 +105,19 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""5301cc21-a915-4628-97e2-cb194904a6cd"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""id"": ""dc27515e-729d-4516-a933-1d6806292763"",
+                    ""path"": ""<Keyboard>/anyKey"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MainAction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""03ac14e0-b38a-47c1-af1f-7d3a9d9877c1"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
