@@ -10,7 +10,6 @@ public class ElderlyState : PlayerBaseState
 
     public override void Enter()
     {
-        player.Anim.Play("Lansia");
         Debug.Log("Entering Stage 5: Pungkur (Lansia)");
         walkTimer = 0f;
         isExhausted = false;

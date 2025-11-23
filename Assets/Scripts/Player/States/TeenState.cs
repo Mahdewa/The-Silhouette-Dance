@@ -3,45 +3,42 @@ using UnityEngine;
 
 public class TeenState : PlayerBaseState
 {
-    private bool isShocked = false;
+    private bool isShocked = false; // Status kena penalty
 
     public TeenState(PlayerController player) : base(player) { }
 
     public override void Enter()
     {
-        Debug.Log("Entering Stage 3: Asmarandana (Remaja)");
-        // Pastikan menghadap Kanan (Scale X positif)
-        player.transform.localScale = new Vector3(8, 8, 8);
-
-        if (player.SpriteRend != null) {
-            player.SpriteRend.color = Color.green;
-        }
+        Debug.Log("Entering Stage 3: Remaja");
+        player.transform.localScale = new Vector3(8, 8, 8); // Hadap Kanan
+        isShocked = false;
     }
 
     public override void FixedUpdate()
     {
+        // 1. Jika sedang Kaget (Shock), hentikan semua input & gerakan
         if (isShocked)
         {
             player.Rb.linearVelocity = Vector2.zero;
             return; 
         }
 
-        // MEKANIK HOLD:
-        // Cek apakah tombol SEDANG ditekan/tahan
+        // 2. Logika Normal (Jalan vs Berhenti)
         if (player.InputActions.Gameplay.MainAction.IsPressed())
         {
-            // Jika ditahan -> Berhenti (Main HP / Like)
+            // Input DITAHAN -> Berhenti (Aman)
             player.Rb.linearVelocity = Vector2.zero;
             // player.Anim.Play("Teen_Stop_Like"); 
         }
         else
         {
-            // Jika dilepas -> Auto Walk ke KANAN (Vector2.right)
+            // Input DILEPAS -> Jalan (Bahaya jika ada mobil)
             player.Rb.linearVelocity = new Vector2(player.RunSpeed * 0.8f, player.Rb.linearVelocity.y);
             // player.Anim.Play("Teen_Walk");
         }
     }
 
+    // Fungsi ini akan dipanggil oleh Mobil/Motor
     public void TriggerShock()
     {
         // Kalau sudah kaget, jangan kaget lagi (biar gak spam)
