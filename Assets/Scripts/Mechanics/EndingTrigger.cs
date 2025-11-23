@@ -25,6 +25,9 @@ public class GameEndingTrigger : MonoBehaviour
     IEnumerator EndGameSequence(GameObject playerObj)
     {
         Debug.Log("Trigger Ending Tersentuh. Memulai Transisi ke Epilog...");
+        
+        // Mainkan SFX bayi menangis
+        AudioManager.Instance.PlaySFX("BabyCrying");
 
         // 1. Matikan Input Player (Supaya gak bisa gerak lagi saat layar gelap)
         // Kita matikan scriptnya, bukan objectnya (supaya coroutine gak ikut mati kalau script ini nempel di player)

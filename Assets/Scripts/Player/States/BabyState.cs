@@ -8,7 +8,7 @@ public class BabyState : PlayerBaseState
     {
         Debug.Log("Entering Stage 1: Mijil (Bayi)");
         player.Rb.linearVelocity = Vector2.zero;
-        player.SpriteRend.color = Color.white; // Reset warna tint jika ada
+        if (player.SpriteRend != null) player.SpriteRend.color = Color.white;
     }
 
     public override void Update()
@@ -19,7 +19,6 @@ public class BabyState : PlayerBaseState
         }
 
         // --- UPDATE VISUAL ---
-        // Jika kecepatan cukup tinggi, play animasi. Jika diam, tampilkan sprite Idle.
         if (player.Rb.linearVelocity.magnitude > 0.1f)
         {
             player.UpdateVisuals(null, "Baby_Crawl");
@@ -33,5 +32,11 @@ public class BabyState : PlayerBaseState
     private void Crawl()
     {
         player.Rb.AddForce(Vector2.left * player.CrawlForce, ForceMode2D.Impulse);
+        
+        // EFFICIENT SFX CALL: Play only if not already playing
+        if (!AudioManager.Instance.sfxSource.isPlaying)
+        {
+            AudioManager.Instance.PlaySFX("Crawling");
+        }
     }
 }

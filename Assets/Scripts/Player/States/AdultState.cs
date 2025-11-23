@@ -3,7 +3,7 @@ using UnityEngine;
 public class AdultState : PlayerBaseState
 {
     public bool isWorking = false; 
-    private float walkDirection = 1f; // 1 = Kanan, -1 = Kiri
+    private float walkDirection = 1f; 
     private WorkStation currentStation = null;
 
     [Header("Scale Settings")]
@@ -18,13 +18,9 @@ public class AdultState : PlayerBaseState
         walkDirection = 1f;
         isWorking = false;
         
-        // Reset Visual
         if (player.SpriteRend != null) player.SpriteRend.color = Color.white;
         
-        // Set Ukuran Awal
         UpdateScaleOnly(walkingScale);
-        
-        // Mulai animasi jalan biasa
         player.UpdateVisuals(null, "Adult-Walk");
     }
 
@@ -52,28 +48,23 @@ public class AdultState : PlayerBaseState
 
         // --- KONDISI JALAN (Gerak) ---
         player.Rb.linearVelocity = new Vector2(player.RunSpeed * walkDirection, player.Rb.linearVelocity.y);
-        
-        // Update Ukuran
         UpdateScaleOnly(walkingScale);
+        
+        // EFFICIENT SFX LOOP
+        if (!AudioManager.Instance.sfxSource.isPlaying)
+        {
+            AudioManager.Instance.PlaySFX("Walk");
+        }
 
-        // --- PEMILIHAN ANIMASI BERDASARKAN ARAH ---
-        if (walkDirection > 0)
-        {
-            // Jalan ke KANAN
-            player.UpdateVisuals(null, "Adult-Walk");
-        }
-        else
-        {
-            // Jalan ke KIRI (Animation sudah di-flip dari editor)
-            player.UpdateVisuals(null, "Adult-Walk-Back");
-        }
+        // --- VISUAL ---
+        if (walkDirection > 0) player.UpdateVisuals(null, "Adult-Walk");
+        else player.UpdateVisuals(null, "Adult-Walk-Back");
     }
 
-    // Fungsi Helper: HANYA Mengatur Ukuran (Tidak mengurus Arah/Flip lagi)
     private void UpdateScaleOnly(float size)
     {
         Vector3 currentScale = player.transform.localScale;
-        currentScale.x = size; // Selalu positif
+        currentScale.x = size; 
         currentScale.y = size;
         currentScale.z = 1f;
         player.transform.localScale = currentScale;
@@ -85,6 +76,10 @@ public class AdultState : PlayerBaseState
         currentStation = station;
         Debug.Log("Mulai Bekerja");
         
+        // Stop suara jalan, ganti typing
+        AudioManager.Instance.sfxSource.Stop();
+        AudioManager.Instance.PlaySFX("Typing");
+        
         player.UpdateVisuals(player.AdultWorkSprite);
         UpdateScaleOnly(workingScale);
     }
@@ -94,14 +89,15 @@ public class AdultState : PlayerBaseState
         isWorking = false;
         currentStation = null;
         Debug.Log("Selesai Bekerja.");
+        
+        AudioManager.Instance.sfxSource.Stop(); // Stop typing
+        AudioManager.Instance.PlaySFX("Likes"); // Feedback selesai
     }
     
     public void FlipDirection()
     {
-        // Cukup ubah arah logikanya saja.
-        // Animasi "Adult-Walk-Back" akan otomatis terpanggil di FixedUpdate frame berikutnya.
         walkDirection = -1f; 
-        
-        Debug.Log("Putar Balik -> Panggil Animasi Back");
+        // Suara jalan akan otomatis terhandle di FixedUpdate
+        Debug.Log("Putar Balik");
     }
 }

@@ -14,27 +14,33 @@ public class PregnantState : PlayerBaseState
         player.transform.localScale = new Vector3(1, 1, 1);
         canMove = true;
         isMourning = false;
-        player.SpriteRend.color = Color.white;
+        if (player.SpriteRend != null) player.SpriteRend.color = Color.white;
     }
 
     public override void FixedUpdate()
     {
-        if (isMourning) return; // Visual diurus oleh Coroutine
+        if (isMourning) return; 
 
         // LOGIKA GERAK
         if (canMove && player.InputActions.Gameplay.MainAction.IsPressed())
         {
             player.Rb.linearVelocity = new Vector2(player.RunSpeed * 0.4f, player.Rb.linearVelocity.y);
             
-            // Animasi Jalan
             player.UpdateVisuals(null, "Bumil-walk");
+            
+            // EFFICIENT SFX LOOP
+            if (!AudioManager.Instance.sfxSource.isPlaying)
+            {
+                AudioManager.Instance.PlaySFX("Walk");
+            }
         }
         else
         {
             player.Rb.linearVelocity = Vector2.zero;
-            
-            // Sprite Idle
             player.UpdateVisuals(player.PregnantIdleSprite);
+            
+            // Stop suara kalau berhenti
+            if (AudioManager.Instance.sfxSource.isPlaying) AudioManager.Instance.sfxSource.Stop();
         }
     }
 
@@ -49,13 +55,14 @@ public class PregnantState : PlayerBaseState
         canMove = false;
         player.Rb.linearVelocity = Vector2.zero;
         
-        // --- GANTI SPRITE MOURN (BERDOA) ---
+        // Stop audio jalan saat mulai berdoa
+        AudioManager.Instance.sfxSource.Stop();
+        
         player.UpdateVisuals(player.PregnantMournSprite);
 
         yield return new WaitForSeconds(duration);
 
         isMourning = false;
         canMove = true;
-        // Kembali ke logika FixedUpdate (Idle/Walk)
     }
 }

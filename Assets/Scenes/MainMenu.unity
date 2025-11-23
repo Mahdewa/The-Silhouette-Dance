@@ -192,14 +192,14 @@ RectTransform:
   m_GameObject: {fileID: 500740541}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 835040968}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 563, y: 44}
+  m_AnchoredPosition: {x: 240, y: 21.5}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &500740543
@@ -572,7 +572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -859,7 +859,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 4c1a33b29b2944f4ead111fbc0ca9f0b, type: 3}
   - name: Crawling
     clip: {fileID: 8300000, guid: cb06cc12ed734ca459a38c1c60989a0e, type: 3}
-  - name: Fail
+  - name: Fall
     clip: {fileID: 8300000, guid: 41ed0e57f29eaf24abf938b5c13f536d, type: 3}
   - name: Death
     clip: {fileID: 8300000, guid: fa005cd374c734d4d802b70d95d465a6, type: 3}
@@ -875,8 +875,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 19d2a2585c0a2164d80e0fcb84153814, type: 3}
   - name: Walk
     clip: {fileID: 8300000, guid: eeae595bb9b1f814596d9812d7e25fc9, type: 3}
-  - name: Walk
-    clip: {fileID: 8300000, guid: eeae595bb9b1f814596d9812d7e25fc9, type: 3}
+  - name: Cough
+    clip: {fileID: 8300000, guid: 218a9b59f663bfd4da478ccdb860f086, type: 3}
   bgmSource: {fileID: 1300678867}
   sfxSource: {fileID: 1300678866}
 --- !u!4 &1300678869
@@ -968,14 +968,14 @@ RectTransform:
   m_GameObject: {fileID: 1747337009}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 835040968}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 563, y: -81}
+  m_AnchoredPosition: {x: 239.99994, y: -36.5}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1747337011

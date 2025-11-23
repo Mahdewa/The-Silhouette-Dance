@@ -16,6 +16,9 @@ public class EndLifeTrigger : MonoBehaviour
             player.Rb.linearVelocity = Vector2.zero; // Stop gerak
             player.enabled = false; // Matikan input
 
+            // Mainkan SFX kematian
+            AudioManager.Instance.PlaySFX("Death");
+
             // 2. Mulai Delay/Transisi ke Epilog (Disini kita pakai Invoke sederhana)
             Invoke("StartEpilog", 5f); // Tunggu 2 detik hening
         }

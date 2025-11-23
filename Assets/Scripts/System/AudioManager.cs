@@ -20,7 +20,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Sumber Audio")]
     [SerializeField] private AudioSource bgmSource;
-    [SerializeField] private AudioSource sfxSource;
+    public AudioSource sfxSource; // Public agar bisa di-stop dari state lain
 
     private void Awake()
     {
@@ -29,6 +29,10 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // Perintah kunci agar tidak hancur saat pindah scene
+            
+            // Assign sfxSource jika belum
+            if (sfxSource == null)
+                sfxSource = GetComponent<AudioSource>();
         }
         else
         {

@@ -11,7 +11,7 @@ public class TeenState : PlayerBaseState
     {
         Debug.Log("Entering Stage 3: Remaja");
         player.transform.localScale = new Vector3(1, 1, 1);
-        player.SpriteRend.color = Color.white;
+        if (player.SpriteRend != null) player.SpriteRend.color = Color.white;
         isShocked = false;
     }
 
@@ -21,7 +21,6 @@ public class TeenState : PlayerBaseState
         if (isShocked)
         {
             player.Rb.linearVelocity = Vector2.zero;
-            // Sprite sudah di-set di TriggerShock, jadi tidak perlu update di sini
             return; 
         }
 
@@ -30,17 +29,26 @@ public class TeenState : PlayerBaseState
         {
             // Input DITAHAN -> Berhenti
             player.Rb.linearVelocity = Vector2.zero;
-            
-            // Tampilkan Sprite Idle
             player.UpdateVisuals(player.TeenIdleSprite);
+            
+            // Stop SFX Jalan jika berhenti
+            if (AudioManager.Instance.sfxSource.isPlaying)
+            {
+                 AudioManager.Instance.sfxSource.Stop();
+            }
         }
         else
         {
             // Input DILEPAS -> Jalan
             player.Rb.linearVelocity = new Vector2(player.RunSpeed * 0.8f, player.Rb.linearVelocity.y);
             
-            // Mainkan Animasi Jalan
             player.UpdateVisuals(null, "Young-Walk");
+            
+            // EFFICIENT SFX LOOP
+            if (!AudioManager.Instance.sfxSource.isPlaying)
+            {
+                AudioManager.Instance.PlaySFX("Walk");
+            }
         }
     }
 
@@ -54,11 +62,13 @@ public class TeenState : PlayerBaseState
     {
         isShocked = true;
         
-        Debug.Log("TIN TIN! Hampir ketabrak! (Shock)");
+        Debug.Log("Shock!");
+        AudioManager.Instance.sfxSource.Stop(); // Stop suara jalan
+        AudioManager.Instance.PlaySFX("Honk");
+        
         player.Rb.linearVelocity = Vector2.zero;
         player.Rb.AddForce(Vector2.left * 2f, ForceMode2D.Impulse); 
         
-        // --- GANTI SPRITE KAGET ---
         player.UpdateVisuals(player.TeenShockSprite);
 
         yield return new WaitForSeconds(1f); 
@@ -66,7 +76,7 @@ public class TeenState : PlayerBaseState
         isShocked = false;
     }
 
-        public bool IsStopped()
+    public bool IsStopped()
     {
         return player.InputActions.Gameplay.MainAction.IsPressed();
     }
