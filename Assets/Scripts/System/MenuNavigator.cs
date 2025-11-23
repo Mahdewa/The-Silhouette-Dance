@@ -5,13 +5,7 @@ public class MenuNavigator : MonoBehaviour
 {
     public void PlayGame()
     {
-        SceneLoader.sceneToLoad = "Prologue";
-        SceneManager.LoadScene("LoadingScene");
-    }
-
-    public void OpenSettings()
-    {
-        SceneManager.LoadScene("Settings");
+        SceneManager.LoadScene("Game");
     }
 
     public void BackToMenu()
@@ -19,16 +13,11 @@ public class MenuNavigator : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-    public void BackToMenuWithLoading()
+    public void GoToEpilogue()
     {
-        SceneLoader.sceneToLoad = "MainMenu";
-        SceneManager.LoadScene("LoadingScene");
+        SceneManager.LoadScene("Epilogue");
     }
 
-    public void OpenCredits()
-    {
-        SceneManager.LoadScene("Credits");
-    }
 
     public void QuitGame()
     {

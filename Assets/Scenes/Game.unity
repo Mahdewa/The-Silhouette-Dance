@@ -1103,7 +1103,7 @@ Transform:
   m_GameObject: {fileID: 453223313}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.64, y: -4.987293, z: 0}
+  m_LocalPosition: {x: -10.71, y: -4.987293, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1627,7 +1627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b03e36096de0f40afcf34bdba2f5be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  epilogSceneName: 06_Epilog
+  epilogSceneName: Epilogue
   delayBeforeLoad: 2
   blackScreenUI: {fileID: 155445972}
 --- !u!61 &564210341

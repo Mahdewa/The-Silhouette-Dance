@@ -5,7 +5,7 @@ using System.Collections; // Wajib ada untuk IEnumerator (Delay)
 public class GameEndingTrigger : MonoBehaviour
 {
     [Header("Transition Settings")]
-    public string epilogSceneName = "06_Epilog"; // Tulis nama scene tujuan kamu disini PERSIS
+    public string epilogSceneName = "Epilogue"; // Tulis nama scene tujuan kamu disini PERSIS
     public float delayBeforeLoad = 2f; // Berapa detik layar hitam sebelum pindah scene?
     
     [Header("UI References")]
