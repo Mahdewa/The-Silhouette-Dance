@@ -2,11 +2,8 @@ using UnityEngine;
 
 public class AdultState : PlayerBaseState
 {
-    // Flag untuk mengecek apakah sedang bekerja di meja
     public bool isWorking = false; 
-    // Arah jalan (1 = Kanan, -1 = Kiri). Awalnya ke Kanan.
     private float walkDirection = 1f;
-
     private WorkStation currentStation = null;
 
     public AdultState(PlayerController player) : base(player) { }
@@ -14,78 +11,66 @@ public class AdultState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log("Entering Stage 4: Durma (Dewasa)");
-        walkDirection = 1f; // Reset arah ke kanan
+        walkDirection = 1f;
         isWorking = false;
-        player.transform.localScale = new Vector3(8, 8, 8);
-
-        if (player.SpriteRend != null) {
-            player.SpriteRend.color = Color.blue;
-        }
+        player.transform.localScale = new Vector3(1, 1, 1);
+        player.SpriteRend.color = Color.white;
     }
 
     public override void Update()
     {
-        // Logika saat SEDANG KERJA (Duduk di meja)
         if (isWorking && currentStation != null)
         {
             if (player.InputActions.Gameplay.MainAction.WasPerformedThisFrame())
             {
-                // Kirim sinyal 'ngetik' ke meja
                 bool finished = currentStation.AddWorkProgress();
-                
-                // Play Animasi Ngetik (One Shot)
-                // player.Anim.SetTrigger("Type");
-
-                if (finished)
-                {
-                    FinishWorking();
-                }
+                // Opsional: Animasi ngetik sebentar atau efek partikel
+                if (finished) FinishWorking();
             }
         }
     }
 
     public override void FixedUpdate()
     {
-        // Jika sedang kerja, jangan jalan
+        // KONDISI KERJA
         if (isWorking)
         {
             player.Rb.linearVelocity = Vector2.zero;
+            // Visual Kerja sudah di-set di EnterWorkMode
             return;
         }
 
-        // Logika Auto Walk Normal
+        // KONDISI JALAN
         player.Rb.linearVelocity = new Vector2(player.RunSpeed * walkDirection, player.Rb.linearVelocity.y);
         
-        // Update arah hadap visual
-        if(walkDirection > 0) player.transform.localScale = new Vector3(8, 8, 8);
-        else player.transform.localScale = new Vector3(-8, 8, 8);
+        if(walkDirection > 0) player.transform.localScale = new Vector3(1, 1, 1);
+        else player.transform.localScale = new Vector3(-1, 1, 1);
+
+        // Mainkan Animasi Jalan
+        player.UpdateVisuals(null, "Adult-Walk");
     }
 
-    // Fungsi helper untuk dipanggil oleh Trigger Meja Kantor nanti
     public void EnterWorkMode(WorkStation station)
     {
         isWorking = true;
         currentStation = station;
         
-        // Snap posisi player biar pas di depan kursi (opsional, biar rapi)
-        // player.transform.position = new Vector3(station.transform.position.x, player.transform.position.y, 0);
+        Debug.Log("Mulai Bekerja");
         
-        Debug.Log("Mulai Bekerja (Spam Spasi!)");
-        // player.Anim.SetBool("IsSitting", true);
+        // --- GANTI SPRITE KERJA ---
+        player.UpdateVisuals(player.AdultWorkSprite);
     }
 
     public void FinishWorking()
     {
         isWorking = false;
         currentStation = null;
-        
-        Debug.Log("Selesai Bekerja. Lanjut Jalan.");
-        // player.Anim.SetBool("IsSitting", false);
+        Debug.Log("Selesai Bekerja.");
+        // Otomatis akan kembali ke animasi jalan di FixedUpdate
     }
     
-    // Fungsi helper untuk putar balik saat ujung kantor
     public void FlipDirection()
     {
-        walkDirection = -1f; // Ubah arah jadi ke Kiri
+        walkDirection = -1f;
     }
 }

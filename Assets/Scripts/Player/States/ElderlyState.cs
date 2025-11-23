@@ -14,47 +14,41 @@ public class ElderlyState : PlayerBaseState
         walkTimer = 0f;
         isExhausted = false;
         // Pastikan menghadap Kiri (Visual)
-        player.transform.localScale = new Vector3(-8, 8, 8);
+        player.transform.localScale = new Vector3(-1, 1, 1);
 
         if (player.SpriteRend != null) {
             player.SpriteRend.color = Color.gray;
         }
     }
 
-    public override void FixedUpdate()
+public override void FixedUpdate()
+{
+    if (player.InputActions.Gameplay.MainAction.IsPressed())
     {
-        // Cek input TAHAN (Hold)
-        if (player.InputActions.Gameplay.MainAction.IsPressed())
+        if (isExhausted) 
         {
-            // Jika sudah lelah, pemain tidak bisa jalan meskipun tombol ditekan
-            if (isExhausted)
-            {
-                player.Rb.linearVelocity = Vector2.zero;
-                return; 
-            }
-
-            // Logic Jalan ke KIRI
-            player.Rb.linearVelocity = new Vector2(-player.RunSpeed * 0.5f, player.Rb.linearVelocity.y); // Speed lebih lambat (0.5x)
-            // player.Anim.Play("Elderly_Walk");
-
-            // Hitung durasi menahan tombol
-            walkTimer += Time.fixedDeltaTime;
-
-            // Jika melebihi batas 3 detik -> Capek!
-            if (walkTimer >= maxWalkDuration)
-            {
-                EnterExhaustedState();
-            }
-        }
-        else
-        {
-            // Jika tombol DILEPAS -> Reset stamina
             player.Rb.linearVelocity = Vector2.zero;
-            // player.Anim.Play("Elderly_Idle");
-            
-            RecoverStamina();
+            player.UpdateVisuals(player.ElderlyIdleSprite); // Capek = Diam/Idle
+            return; 
         }
+
+        player.Rb.linearVelocity = new Vector2(-player.RunSpeed * 0.5f, player.Rb.linearVelocity.y);
+        
+        // Animasi Jalan
+        player.UpdateVisuals(null, "Elder-Walk");
+
+        walkTimer += Time.fixedDeltaTime;
+        if (walkTimer >= maxWalkDuration) EnterExhaustedState();
     }
+    else
+    {
+        player.Rb.linearVelocity = Vector2.zero;
+        RecoverStamina();
+        
+        // Sprite Idle
+        player.UpdateVisuals(player.ElderlyIdleSprite);
+    }
+}
 
     private void EnterExhaustedState()
     {

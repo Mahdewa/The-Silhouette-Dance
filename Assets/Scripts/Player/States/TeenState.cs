@@ -3,47 +3,50 @@ using UnityEngine;
 
 public class TeenState : PlayerBaseState
 {
-    private bool isShocked = false; // Status kena penalty
+    private bool isShocked = false;
 
     public TeenState(PlayerController player) : base(player) { }
 
     public override void Enter()
     {
         Debug.Log("Entering Stage 3: Remaja");
-        player.transform.localScale = new Vector3(8, 8, 8); // Hadap Kanan
+        player.transform.localScale = new Vector3(1, 1, 1);
+        player.SpriteRend.color = Color.white;
         isShocked = false;
     }
 
     public override void FixedUpdate()
     {
-        // 1. Jika sedang Kaget (Shock), hentikan semua input & gerakan
+        // 1. KONDISI KAGET
         if (isShocked)
         {
             player.Rb.linearVelocity = Vector2.zero;
+            // Sprite sudah di-set di TriggerShock, jadi tidak perlu update di sini
             return; 
         }
 
-        // 2. Logika Normal (Jalan vs Berhenti)
+        // 2. LOGIKA NORMAL
         if (player.InputActions.Gameplay.MainAction.IsPressed())
         {
-            // Input DITAHAN -> Berhenti (Aman)
+            // Input DITAHAN -> Berhenti
             player.Rb.linearVelocity = Vector2.zero;
-            // player.Anim.Play("Teen_Stop_Like"); 
+            
+            // Tampilkan Sprite Idle
+            player.UpdateVisuals(player.TeenIdleSprite);
         }
         else
         {
-            // Input DILEPAS -> Jalan (Bahaya jika ada mobil)
+            // Input DILEPAS -> Jalan
             player.Rb.linearVelocity = new Vector2(player.RunSpeed * 0.8f, player.Rb.linearVelocity.y);
-            // player.Anim.Play("Teen_Walk");
+            
+            // Mainkan Animasi Jalan
+            player.UpdateVisuals(null, "Young-Walk");
         }
     }
 
-    // Fungsi ini akan dipanggil oleh Mobil/Motor
     public void TriggerShock()
     {
-        // Kalau sudah kaget, jangan kaget lagi (biar gak spam)
         if (isShocked) return;
-
         player.StartCoroutine(ShockRoutine());
     }
 
@@ -51,25 +54,19 @@ public class TeenState : PlayerBaseState
     {
         isShocked = true;
         
-        // Efek Visual & Audio
         Debug.Log("TIN TIN! Hampir ketabrak! (Shock)");
-        player.Rb.linearVelocity = Vector2.zero; // Stop paksa
-        player.Rb.AddForce(Vector2.left * 2f, ForceMode2D.Impulse); // Efek terpental dikit ke belakang
+        player.Rb.linearVelocity = Vector2.zero;
+        player.Rb.AddForce(Vector2.left * 2f, ForceMode2D.Impulse); 
         
-        // player.Anim.Play("Teen_Shock");
-        // AudioManager.Play("CarHonk"); 
+        // --- GANTI SPRITE KAGET ---
+        player.UpdateVisuals(player.TeenShockSprite);
 
-        // DELAY 1 DETIK (Sesuai GDD)
         yield return new WaitForSeconds(1f); 
 
-        // Pulih kembali
         isShocked = false;
-        Debug.Log("Lanjut jalan...");
-        // player.Anim.Play("Teen_Walk");
     }
-    
-    // Helper untuk mengecek apakah player sedang berhenti (Aman)
-    public bool IsStopped()
+
+        public bool IsStopped()
     {
         return player.InputActions.Gameplay.MainAction.IsPressed();
     }

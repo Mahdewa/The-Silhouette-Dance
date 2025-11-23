@@ -3,68 +3,59 @@ using UnityEngine;
 
 public class PregnantState : PlayerBaseState
 {
-    public bool isMourning = false; // Status sedang ziarah
-    private bool canMove = true;    // Apakah boleh jalan?
+    public bool isMourning = false;
+    private bool canMove = true;
 
     public PregnantState(PlayerController player) : base(player) { }
 
     public override void Enter()
     {
         Debug.Log("Entering Stage 6: Epilog (Bumil)");
-        // Arah gerak ke KANAN (Pulang ke rumah)
-        player.transform.localScale = new Vector3(8, 8, 8);
+        player.transform.localScale = new Vector3(1, 1, 1);
         canMove = true;
         isMourning = false;
-
-        if (player.SpriteRend != null) {
-            player.SpriteRend.color = new Color(0.7f, 0.3f, 1f);
-        }
+        player.SpriteRend.color = Color.white;
     }
 
     public override void FixedUpdate()
     {
-        // Jika sedang ziarah atau dilarang gerak, berhenti total
-        if (!canMove || isMourning)
-        {
-            player.Rb.linearVelocity = Vector2.zero;
-            return;
-        }
+        if (isMourning) return; // Visual diurus oleh Coroutine
 
-        // Input HOLD (Tahan) - Tanpa Stamina
-        if (player.InputActions.Gameplay.MainAction.IsPressed())
+        // LOGIKA GERAK
+        if (canMove && player.InputActions.Gameplay.MainAction.IsPressed())
         {
-            // Jalan pelan ke KANAN
             player.Rb.linearVelocity = new Vector2(player.RunSpeed * 0.4f, player.Rb.linearVelocity.y);
-            // player.Anim.Play("Pregnant_Walk");
+            
+            // Animasi Jalan
+            player.UpdateVisuals(null, "Bumil-walk");
         }
         else
         {
             player.Rb.linearVelocity = Vector2.zero;
-            // player.Anim.Play("Pregnant_Idle");
+            
+            // Sprite Idle
+            player.UpdateVisuals(player.PregnantIdleSprite);
         }
     }
 
-    // --- LOGIKA ZIARAH (Dipanggil Trigger Makam) ---
     public void StartMourning(float duration)
     {
-        // Mulai event ziarah: Hentikan karakter
         player.StartCoroutine(MourningRoutine(duration));
     }
 
     private IEnumerator MourningRoutine(float duration)
     {
-        Debug.Log("Sampai di Makam. Berdoa...");
-        isMourning = true;  // Flag true biar gak bisa jalan
+        isMourning = true;
         canMove = false;
         player.Rb.linearVelocity = Vector2.zero;
         
-        // player.Anim.Play("Pregnant_Mourn");
+        // --- GANTI SPRITE MOURN (BERDOA) ---
+        player.UpdateVisuals(player.PregnantMournSprite);
 
-        yield return new WaitForSeconds(duration); // Tunggu 3 detik
+        yield return new WaitForSeconds(duration);
 
-        Debug.Log("Selesai berdoa. Silakan jalan pulang.");
         isMourning = false;
-        canMove = true; // Izinkan jalan lagi
-        // player.Anim.Play("Pregnant_Idle");
+        canMove = true;
+        // Kembali ke logika FixedUpdate (Idle/Walk)
     }
 }

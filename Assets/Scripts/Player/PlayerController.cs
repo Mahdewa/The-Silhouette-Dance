@@ -6,16 +6,14 @@ public class PlayerController : MonoBehaviour
     [Header("Components")]
     public Rigidbody2D Rb;
     public Animator Anim;
-    
     public SpriteRenderer SpriteRend;
 
     // --- INPUT SYSTEM ---
-    public GameControls InputActions; // Class yang kita generate tadi
+    public GameControls InputActions;
 
     // --- STATE MACHINE ---
     public PlayerBaseState CurrentState;
     
-    // Instance dari setiap State
     public BabyState StateBaby;
     public ChildState StateChild;
     public TeenState StateTeen;
@@ -23,11 +21,28 @@ public class PlayerController : MonoBehaviour
     public ElderlyState StateElderly;
     public PregnantState StatePregnant;
 
-    // --- SETTINGS (Bisa disesuaikan di Inspector) ---
+    // --- SETTINGS ---
     [Header("Movement Settings")]
-    public float CrawlForce = 5f; // Tenaga bayi merangkak 
-    public float RunSpeed = 4f;   // Kecepatan lari anak 
-    public float JumpForce = 7f;  // Kekuatan lompat 
+    public float CrawlForce = 5f;
+    public float RunSpeed = 4f;
+    public float JumpForce = 7f;
+
+    // --- VISUAL SETTINGS (SPRITES) ---
+    [Header("Visual Assets - Sprites")]
+    // 1. Idle Sprites per State
+    public Sprite BabyIdleSprite;
+    public Sprite ChildIdleSprite;
+    public Sprite TeenIdleSprite;
+    public Sprite AdultIdleSprite;
+    public Sprite ElderlyIdleSprite;
+    public Sprite PregnantIdleSprite;
+
+    // 2. Event Specific Sprites
+    public Sprite ChildJumpSprite;
+    public Sprite ChildFallSprite; // Opsional jika nanti ada logika jatuh
+    public Sprite TeenShockSprite;
+    public Sprite AdultWorkSprite;
+    public Sprite PregnantMournSprite;
 
     private void Awake()
     {
@@ -45,15 +60,8 @@ public class PlayerController : MonoBehaviour
         StatePregnant = new PregnantState(this);
     }
 
-    private void OnEnable()
-    {
-        InputActions.Enable();
-    }
-
-    private void OnDisable()
-    {
-        InputActions.Disable();
-    }
+    private void OnEnable() => InputActions.Enable();
+    private void OnDisable() => InputActions.Disable();
 
     private void Start()
     {
@@ -70,11 +78,33 @@ public class PlayerController : MonoBehaviour
         CurrentState.FixedUpdate();
     }
 
-    // Fungsi untuk ganti State
     public void SwitchState(PlayerBaseState newState)
     {
-        CurrentState?.Exit(); // Keluar dari state lama
+        CurrentState?.Exit();
         CurrentState = newState;
-        CurrentState.Enter(); // Masuk ke state baru
+        CurrentState.Enter();
+    }
+
+    // --- HELPER UNTUK VISUAL ---
+    // Fungsi ini pintar: kalau kita kasih Sprite, dia matikan Animator.
+    // Kalau kita kasih nama Animasi, dia nyalakan Animator.
+    public void UpdateVisuals(Sprite spriteToUse = null, string animName = "")
+    {
+        if (spriteToUse != null)
+        {
+            // Mode Sprite Statis
+            Anim.enabled = false; // Matikan animator biar sprite gak ketimpa
+            SpriteRend.sprite = spriteToUse;
+        }
+        else if (!string.IsNullOrEmpty(animName))
+        {
+            // Mode Animasi
+            Anim.enabled = true;
+            // Cek biar gak play animasi yang sama berulang-ulang (reset frame)
+            if (!Anim.GetCurrentAnimatorStateInfo(0).IsName(animName))
+            {
+                Anim.Play(animName);
+            }
+        }
     }
 }
